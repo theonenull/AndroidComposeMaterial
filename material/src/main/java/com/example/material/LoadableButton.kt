@@ -101,28 +101,3 @@ fun  AnimationEffectData.toIntSize():IntSize{
     return IntSize(this.width,this.height)
 }
 
-@Preview
-@Composable
-fun LoadButtonPreview(){
-    var state by remember {
-        mutableStateOf(ButtonState.Normal)
-    }
-    LoadableButton(
-        onClick = {
-                  state = when(state){
-                      ButtonState.Loading -> ButtonState.Normal
-                      ButtonState.Normal->ButtonState.Loading
-                  }
-        },
-        buttonState = state,
-        normalContent = {
-            Text(text = "Normal")
-        },
-        loadingContent = {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-        }
-    ) 
-}
