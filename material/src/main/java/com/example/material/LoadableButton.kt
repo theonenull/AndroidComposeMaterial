@@ -3,11 +3,18 @@ package com.example.material
 import androidx.compose.animation.core.animateIntSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ButtonColors
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,15 +26,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonBorder
-import androidx.wear.compose.material.ButtonColors
-import androidx.wear.compose.material.ButtonDefaults
-import androidx.wear.compose.material.CircularProgressIndicator
-import androidx.wear.compose.material.Text
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -41,12 +44,14 @@ fun LoadableButton(
     onStateChange : (ButtonState)->Unit = {},
     onClick: () -> Unit,
     enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.primaryButtonColors(),
+    shape: Shape = ButtonDefaults.shape,
+    colors: androidx.compose.material3.ButtonColors = ButtonDefaults.buttonColors(),
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = CircleShape,
-    border: ButtonBorder = ButtonDefaults.buttonBorder(),
-    normalContent: @Composable BoxScope.()->Unit,
-    loadingContent: @Composable BoxScope.()->Unit,
+    normalContent: @Composable RowScope.()->Unit,
+    loadingContent: @Composable RowScope.()->Unit,
 ){
 
     
@@ -67,16 +72,23 @@ fun LoadableButton(
             }
     }
     Button(
-        onClick = onClick,
-        
         modifier = modifier
-            .size(buttonSize.width.dp, buttonSize.height.dp)
-            .clip(shape),
+            .size(
+                width = with(LocalDensity.current){
+                    buttonSize.width.toDp()
+                },
+                height = with(LocalDensity.current){
+                    buttonSize.height.toDp()
+                }
+            ),
+        onClick = onClick,
         enabled = enabled,
-        colors = colors,
-        interactionSource = interactionSource,
         shape = shape,
+        colors = colors,
+        elevation =elevation,
         border = border,
+        contentPadding = contentPadding,
+        interactionSource = interactionSource,
     ) {
         when(buttonState){
             ButtonState.Normal-> {

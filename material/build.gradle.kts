@@ -100,7 +100,7 @@ dependencies {
     implementation("androidx.wear.compose:compose-material:1.1.2")
 
     // Foundation is additive, so you can use the mobile version in your Wear OS app.
-    implementation("androidx.wear.compose:compose-foundation:1.1.2")
+//    implementation("androidx.wear.compose:compose-foundation:1.1.2")
 
     implementation ("androidx.compose.material3:material3:1.0.1")
 }
