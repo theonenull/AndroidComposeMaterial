@@ -30,7 +30,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.ButtonBorder
+import androidx.wear.compose.material.CircularProgressIndicator
+import androidx.wear.compose.material.Text
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -48,13 +49,12 @@ fun LoadableButton(
     colors: androidx.compose.material3.ButtonColors = ButtonDefaults.buttonColors(),
     elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
     border: BorderStroke? = null,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    contentPadding: PaddingValues = PaddingValues(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     normalContent: @Composable RowScope.()->Unit,
     loadingContent: @Composable RowScope.()->Unit,
 ){
 
-    
     val translateAnimation = updateTransition(targetState = buttonState, label = "")
     val buttonSize : IntSize by translateAnimation.animateIntSize(
         label = "",
@@ -74,12 +74,8 @@ fun LoadableButton(
     Button(
         modifier = modifier
             .size(
-                width = with(LocalDensity.current){
-                    buttonSize.width.toDp()
-                },
-                height = with(LocalDensity.current){
-                    buttonSize.height.toDp()
-                }
+                width = buttonSize.width.dp,
+                height = buttonSize.height.dp
             ),
         onClick = onClick,
         enabled = enabled,
@@ -113,3 +109,29 @@ fun  AnimationEffectData.toIntSize():IntSize{
     return IntSize(this.width,this.height)
 }
 
+
+@Preview
+@Composable
+fun LoadButtonPreview(){
+    var state by remember {
+        mutableStateOf(ButtonState.Normal)
+    }
+    LoadableButton(
+        onClick = {
+            state = when(state){
+                ButtonState.Loading -> ButtonState.Normal
+                ButtonState.Normal->ButtonState.Loading
+            }
+        },
+        buttonState = state,
+        normalContent = {
+            Text(text = "Normal")
+        },
+        loadingContent = {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }
+    )
+}
